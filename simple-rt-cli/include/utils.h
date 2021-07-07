@@ -26,8 +26,8 @@
 #define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
 
 typedef struct simple_rt_config_t {
-    const char *interface;
-    const char *nameserver;
+  const char *interface;
+  const char *nameserver;
 } simple_rt_config_t;
 
 extern simple_rt_config_t *get_simple_rt_config(void);

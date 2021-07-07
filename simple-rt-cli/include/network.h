@@ -19,8 +19,8 @@
 #ifndef _NETWORH_H_
 #define _NETWORH_H_
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "accessory.h"
 
@@ -29,10 +29,9 @@ void stop_network(void);
 
 ssize_t send_network_packet(const uint8_t *data, size_t size);
 
-accessory_id_t get_acc_id_from_packet(const uint8_t *data,
-        size_t size, bool dst_addr);
+accessory_id_t get_acc_id_from_packet(const uint8_t *data, size_t size,
+                                      bool dst_addr);
 
-char *fill_serial_param(char *buf, size_t size,
-        accessory_id_t acc_id);
+char *fill_serial_param(char *buf, size_t size, accessory_id_t acc_id);
 
 #endif

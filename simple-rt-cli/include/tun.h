@@ -19,8 +19,10 @@
 #ifndef _TUN_H_
 #define _TUN_H_
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <sys/types.h>
 
 bool is_tun_present(void);
 int tun_alloc(char *dev_name, size_t dev_name_size);

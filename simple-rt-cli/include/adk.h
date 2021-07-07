@@ -19,20 +19,20 @@
 #ifndef _LINUX_ADK_H_
 #define _LINUX_ADK_H_
 
-#include <stdint.h>
 #include <libusb.h>
+#include <stdint.h>
 
 #include "accessory.h"
 
 typedef accessory_id_t (*gen_new_serial_str_cb)(char *str, size_t size);
 
 accessory_t *probe_usb_device(struct libusb_device *dev,
-        gen_new_serial_str_cb gen_new_serial_str);
+                              gen_new_serial_str_cb gen_new_serial_str);
 
 ssize_t read_usb_packet(struct libusb_device_handle *handle, uint8_t ep,
-        uint8_t *data, size_t size);
+                        uint8_t *data, size_t size);
 
 ssize_t write_usb_packet(struct libusb_device_handle *handle, uint8_t ep,
-        const uint8_t *data, size_t size);
+                         const uint8_t *data, size_t size);
 
 #endif /* _LINUX_ADK_H_ */
