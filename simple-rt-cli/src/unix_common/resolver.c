@@ -16,33 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
-#include <resolv.h>
 #include <arpa/inet.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "utils.h"
 
-const char *get_system_nameserver(void)
-{
-    struct __res_state rs;
-    static char buf[128];
+#include <resolv.h>
 
-    if (res_ninit(&rs) < 0) {
-        goto end;
-    }
+#if defined(__linux__) && !defined(__GLIBC__)
+#include "resolv_compat.h"
+#endif
 
-    if (!rs.nscount) {
-        goto end;
-    }
+const char *get_system_nameserver(void) {
+  struct __res_state rs;
+  static char buf[128];
 
-    /* using first nameserver */
-    memset(buf, 0, sizeof(buf));
-    strncpy(buf, inet_ntoa(rs.nsaddr_list[0].sin_addr), sizeof(buf) - 1);
+  if (res_ninit(&rs) < 0) {
+    goto end;
+  }
 
-    return buf;
+  if (!rs.nscount) {
+    goto end;
+  }
+
+  /* using first nameserver */
+  memset(buf, 0, sizeof(buf));
+  strncpy(buf, inet_ntoa(rs.nsaddr_list[0].sin_addr), sizeof(buf) - 1);
+
+  return buf;
 
 end:
-    fprintf(stderr, "Cannot find system nameserver. Default one will be used.\n");
-    return DEFAULT_NAMESERVER;
+  fprintf(stderr, "Cannot find system nameserver. Default one will be used.\n");
+  return DEFAULT_NAMESERVER;
 }
-

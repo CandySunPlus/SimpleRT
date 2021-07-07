@@ -1,0 +1,142 @@
+[
+ {
+  "directory": "/home/niksun/source/SimpleRT/simple-rt-cli",
+  "arguments": [
+   "cc",
+   "-g",
+   "-std=c11",
+   "-D_DEFAULT_SOURCE",
+   "-DIFACE_UP_SH_PATH=\"/usr/local/libexec/simple-rt/iface_up.sh\"",
+   "-Wall",
+   "-pedantic",
+   "-Iinclude",
+   "-I/usr/include/libusb-1.0",
+   "-DPLATFORM=\"linux\"",
+   "-c",
+   "src/accessory.c",
+   "-o",
+   "obj/src/accessory.o"
+  ],
+  "file": "src/accessory.c"
+ },
+ {
+  "directory": "/home/niksun/source/SimpleRT/simple-rt-cli",
+  "arguments": [
+   "cc",
+   "-g",
+   "-std=c11",
+   "-D_DEFAULT_SOURCE",
+   "-DIFACE_UP_SH_PATH=\"/usr/local/libexec/simple-rt/iface_up.sh\"",
+   "-Wall",
+   "-pedantic",
+   "-Iinclude",
+   "-I/usr/include/libusb-1.0",
+   "-DPLATFORM=\"linux\"",
+   "-c",
+   "src/adk.c",
+   "-o",
+   "obj/src/adk.o"
+  ],
+  "file": "src/adk.c"
+ },
+ {
+  "directory": "/home/niksun/source/SimpleRT/simple-rt-cli",
+  "arguments": [
+   "cc",
+   "-g",
+   "-std=c11",
+   "-D_DEFAULT_SOURCE",
+   "-DIFACE_UP_SH_PATH=\"/usr/local/libexec/simple-rt/iface_up.sh\"",
+   "-Wall",
+   "-pedantic",
+   "-Iinclude",
+   "-I/usr/include/libusb-1.0",
+   "-DPLATFORM=\"linux\"",
+   "-c",
+   "src/main.c",
+   "-o",
+   "obj/src/main.o"
+  ],
+  "file": "src/main.c"
+ },
+ {
+  "directory": "/home/niksun/source/SimpleRT/simple-rt-cli",
+  "arguments": [
+   "cc",
+   "-g",
+   "-std=c11",
+   "-D_DEFAULT_SOURCE",
+   "-DIFACE_UP_SH_PATH=\"/usr/local/libexec/simple-rt/iface_up.sh\"",
+   "-Wall",
+   "-pedantic",
+   "-Iinclude",
+   "-I/usr/include/libusb-1.0",
+   "-DPLATFORM=\"linux\"",
+   "-c",
+   "src/network.c",
+   "-o",
+   "obj/src/network.o"
+  ],
+  "file": "src/network.c"
+ },
+ {
+  "directory": "/home/niksun/source/SimpleRT/simple-rt-cli",
+  "arguments": [
+   "cc",
+   "-g",
+   "-std=c11",
+   "-D_DEFAULT_SOURCE",
+   "-DIFACE_UP_SH_PATH=\"/usr/local/libexec/simple-rt/iface_up.sh\"",
+   "-Wall",
+   "-pedantic",
+   "-Iinclude",
+   "-I/usr/include/libusb-1.0",
+   "-DPLATFORM=\"linux\"",
+   "-c",
+   "src/unix_common/resolver.c",
+   "-o",
+   "obj/src/unix_common/resolver.o"
+  ],
+  "file": "src/unix_common/resolver.c"
+ },
+ {
+  "directory": "/home/niksun/source/SimpleRT/simple-rt-cli",
+  "arguments": [
+   "cc",
+   "-g",
+   "-std=c11",
+   "-D_DEFAULT_SOURCE",
+   "-DIFACE_UP_SH_PATH=\"/usr/local/libexec/simple-rt/iface_up.sh\"",
+   "-Wall",
+   "-pedantic",
+   "-Iinclude",
+   "-I/usr/include/libusb-1.0",
+   "-DPLATFORM=\"linux\"",
+   "-c",
+   "src/linux/tun.c",
+   "-o",
+   "obj/src/linux/tun.o"
+  ],
+  "file": "src/linux/tun.c"
+ },
+ {
+  "directory": "/home/niksun/source/SimpleRT/simple-rt-cli",
+  "arguments": [
+   "cc",
+   "-g",
+   "-std=c11",
+   "-D_DEFAULT_SOURCE",
+   "-DIFACE_UP_SH_PATH=\"/usr/local/libexec/simple-rt/iface_up.sh\"",
+   "-Wall",
+   "-pedantic",
+   "-Iinclude",
+   "-I/usr/include/libusb-1.0",
+   "-DPLATFORM=\"linux\"",
+   "-c",
+   "src/linux/utils.c",
+   "-o",
+   "obj/src/linux/utils.o"
+  ],
+  "file": "src/linux/utils.c"
+ }
+]
