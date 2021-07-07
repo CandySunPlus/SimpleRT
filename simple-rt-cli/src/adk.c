@@ -159,6 +159,8 @@ accessory_t *probe_usb_device(struct libusb_device *dev,
         return NULL;
     }
 
+    printf("in probe usb device.\n");
+
     if (is_accessory_present(dev)) {
         uint16_t endpoints = get_accessory_endpoints(dev);
 

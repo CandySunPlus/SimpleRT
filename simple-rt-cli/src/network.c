@@ -179,6 +179,8 @@ bool start_network(void)
         return false;
     }
 
+    printf("setup tun iface up.\n");
+
     if (!iface_up(tun_name)) {
         fprintf(stderr, "Unable set iface %s up\n", tun_name);
         close(tun_fd);

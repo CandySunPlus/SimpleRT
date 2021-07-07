@@ -31,7 +31,9 @@ set -e
 comment="simple_rt"
 
 function linux_start {
-    ifconfig $TUN_DEV $HOST_ADDR/$TUNNEL_CIDR up
+    ip addr add $HOST_ADDR/$TUNNEL_CIDR dev $TUN_DEV
+    ip link set dev $TUN_DEV up
+    # ifconfig $TUN_DEV $HOST_ADDR/$TUNNEL_CIDR up
     sysctl -w net.ipv4.ip_forward=1 > /dev/null
     iptables -I FORWARD -j ACCEPT -m comment --comment "${comment}"
     iptables -t nat -I POSTROUTING -s $TUNNEL_NET/$TUNNEL_CIDR -o $LOCAL_INTERFACE -j MASQUERADE -m comment --comment "${comment}"

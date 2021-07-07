@@ -38,6 +38,8 @@
 static int hotplug_callback(struct libusb_context *ctx,
                             struct libusb_device *dev,
                             libusb_hotplug_event event, void *arg) {
+
+  printf("got hotplug event callback.\n");
   if (event != LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED) {
     fprintf(stderr, "Unknown libusb_hotplug_event: %d\n", event);
     return 0;
@@ -121,10 +123,14 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
+  printf("network started.\n");
+
   rc = libusb_hotplug_register_callback(
       NULL, LIBUSB_HOTPLUG_EVENT_DEVICE_ARRIVED, LIBUSB_HOTPLUG_ENUMERATE,
       LIBUSB_HOTPLUG_MATCH_ANY, LIBUSB_HOTPLUG_MATCH_ANY,
       LIBUSB_HOTPLUG_MATCH_ANY, hotplug_callback, NULL, &callback_handle);
+
+  printf("libusb hotplug callback register %d.\n", rc);
 
   if (rc != LIBUSB_SUCCESS) {
     fprintf(stderr, "Error creating a hotplug callback\n");

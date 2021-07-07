@@ -36,8 +36,7 @@ bool is_tun_present(void)
 
 int tun_alloc(char *dev_name, size_t dev_name_size)
 {
-    int fd;
-    int err;
+    int fd, err;
     struct ifreq ifr;
 
     if ((fd = open(clonedev, O_RDWR)) < 0 ) {
