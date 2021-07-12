@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  android:
+    image: adoptopenjdk/openjdk8:alpine
+    volumes:
+      - ~/.android/sdk:/root/.android/sdk
+      - ./simple-rt-android:/root/source
+    environment:
+      - ANDROID_SDK_ROOT=/root/.android/sdk
+      - ANDROID_NDK_ROOT=/root/.android/sdk/ndk-bundle
+      - ANDROID_HOME=/root/.android
