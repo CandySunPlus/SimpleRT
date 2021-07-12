@@ -1,9 +1,9 @@
+use log::trace;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::os::unix::prelude::{FromRawFd, RawFd};
 use std::sync::{atomic, Arc, Mutex};
 use std::thread;
-use log::trace;
 
 #[allow(unused_macros)]
 macro_rules! syscall {
@@ -60,18 +60,15 @@ impl Tunnel {
         let mut buf = [0u8; ACC_BUF_SIZE];
         let mut in_file: File;
         let mut out_file: File;
+        let mut tunnel = tunnel.lock().unwrap();
         match handle_type {
             HandleType::Tun => {
                 trace!("start {:?} thread", handle_type);
                 in_file = tunnel
-                    .lock()
-                    .unwrap()
                     .tun_file
                     .take()
                     .expect("tun file not found");
                 out_file = tunnel
-                    .lock()
-                    .unwrap()
                     .acc_file
                     .take()
                     .expect("acc file not found");
@@ -79,22 +76,23 @@ impl Tunnel {
             HandleType::Acc => {
                 trace!("start {:?} thread", handle_type);
                 in_file = tunnel
-                    .lock()
-                    .unwrap()
                     .acc_file
                     .take()
                     .expect("acc file not found");
                 out_file = tunnel
-                    .lock()
-                    .unwrap()
                     .tun_file
                     .take()
                     .expect("tun file not found");
             }
         }
 
-        trace!("tunnel in {:?} status: {}", handle_type, tunnel.lock().unwrap().is_started());
-        while tunnel.lock().unwrap().is_started() {
+        trace!(
+            "tunnel in {:?} status: {}",
+            handle_type,
+            tunnel.is_started()
+        );
+
+        while tunnel.is_started() {
             trace!("in {:?} running loop", handle_type);
             if let Ok(_) = in_file.read(&mut buf) {
                 out_file.write(&buf).expect("write file error");
@@ -103,11 +101,7 @@ impl Tunnel {
             }
         }
 
-        tunnel
-            .lock()
-            .unwrap()
-            .is_started
-            .store(false, atomic::Ordering::SeqCst);
+        tunnel.is_started.store(false, atomic::Ordering::SeqCst);
     }
 
     fn init(&mut self, tun_fd: i32, acc_fd: i32) {
