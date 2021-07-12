@@ -32,21 +32,21 @@ pub extern "C" fn Java_com_viper_simplert_Native_start(
     acc_fd: jint,
 ) {
     trace!("START: tun_fd = {}, acc_fd = {}", tun_fd, acc_fd);
-    let tunnel = TUNNEL.lock().unwrap();
 
-    if tunnel.is_started() {
+    if TUNNEL.lock().unwrap().is_started() {
         error!("Native threads already started!");
         return;
     }
 
-    Tunnel::start(TUNNEL.clone(), tun_fd, acc_fd)
+    trace!("TUNNEL STARTING");
+    Tunnel::start(TUNNEL.clone(), tun_fd, acc_fd);
+    trace!("TUNNEL STARTED");
 }
 
 #[no_mangle]
 pub extern "C" fn Java_com_viper_simplert_Native_stop(_env: JNIEnv, _class: JClass) {
     trace!("STOP");
-    let mut tunnel = TUNNEL.lock().unwrap();
-    tunnel.stop();
+    TUNNEL.lock().unwrap().stop();
 }
 
 #[no_mangle]
@@ -55,6 +55,5 @@ pub extern "C" fn Java_com_viper_simplert_Native_isRunning(
     _class: JClass,
 ) -> jboolean {
     trace!("CHECK RUNNING");
-    let tunnel = TUNNEL.lock().unwrap();
-    tunnel.is_started().into()
+    TUNNEL.lock().unwrap().is_started().into()
 }

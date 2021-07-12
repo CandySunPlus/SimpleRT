@@ -67,7 +67,7 @@ public class TetherService extends VpnService {
       return START_NOT_STICKY;
     }
 
-    if (Native.is_running()) {
+    if (Native.isRunning()) {
       Log.e(TAG, "already running!");
       return START_NOT_STICKY;
     }
