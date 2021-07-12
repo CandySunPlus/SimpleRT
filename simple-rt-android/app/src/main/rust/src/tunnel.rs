@@ -3,6 +3,7 @@ use std::io::{Read, Write};
 use std::os::unix::prelude::{FromRawFd, RawFd};
 use std::sync::{atomic, Arc, Mutex};
 use std::thread;
+use log::trace;
 
 #[allow(unused_macros)]
 macro_rules! syscall {
@@ -58,6 +59,7 @@ impl Tunnel {
         let mut buf = [0u8; ACC_BUF_SIZE];
         let mut in_file: File;
         let mut out_file: File;
+        trace!("start tunnel thread");
         match handle_type {
             HandleType::Tun => {
                 in_file = tunnel
