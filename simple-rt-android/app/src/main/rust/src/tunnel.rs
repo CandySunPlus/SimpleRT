@@ -17,6 +17,7 @@ macro_rules! syscall {
     }};
 }
 
+#[derive(Debug)]
 enum HandleType {
     Tun,
     Acc,
@@ -59,9 +60,9 @@ impl Tunnel {
         let mut buf = [0u8; ACC_BUF_SIZE];
         let mut in_file: File;
         let mut out_file: File;
-        trace!("start tunnel thread");
         match handle_type {
             HandleType::Tun => {
+                trace!("start {:?} thread", handle_type);
                 in_file = tunnel
                     .lock()
                     .unwrap()
@@ -76,6 +77,7 @@ impl Tunnel {
                     .expect("acc file not found");
             }
             HandleType::Acc => {
+                trace!("start {:?} thread", handle_type);
                 in_file = tunnel
                     .lock()
                     .unwrap()
@@ -91,7 +93,9 @@ impl Tunnel {
             }
         }
 
+        trace!("tunnel in {:?} status: {}", handle_type, tunnel.lock().unwrap().is_started());
         while tunnel.lock().unwrap().is_started() {
+            trace!("in {:?} running loop", handle_type);
             if let Ok(_) = in_file.read(&mut buf) {
                 out_file.write(&buf).expect("write file error");
             } else {
