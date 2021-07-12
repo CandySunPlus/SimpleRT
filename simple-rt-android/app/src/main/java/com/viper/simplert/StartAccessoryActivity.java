@@ -24,9 +24,8 @@ import android.net.VpnService;
 import android.os.Bundle;
 
 public class StartAccessoryActivity extends Activity {
-    private static final String TAG = "StartAccessoryActivity";
 
-    @Override
+  @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

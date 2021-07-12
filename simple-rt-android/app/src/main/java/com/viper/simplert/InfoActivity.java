@@ -19,40 +19,31 @@
 package com.viper.simplert;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class InfoActivity extends AppCompatActivity {
 
-    private TextView text_info;
-    private Button button_ok;
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_info);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info);
+    setFinishOnTouchOutside(false);
 
-        setFinishOnTouchOutside(false);
+    Intent intent = getIntent();
 
-        Intent intent = getIntent();
-
-        if (intent == null) {
-            finish();
-        }
-
-        text_info = (TextView) findViewById(R.id.text_info);
-        button_ok = (Button) findViewById(R.id.button_ok);
-
-        text_info.setText(intent.getStringExtra("text"));
-
-        button_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+    if (intent == null) {
+      finish();
     }
+
+    TextView text_info = findViewById(R.id.text_info);
+    Button button_ok = findViewById(R.id.button_ok);
+
+    text_info.setText(intent != null ? intent.getStringExtra("text") : null);
+
+    button_ok.setOnClickListener(view -> finish());
+  }
 }
