@@ -1,0 +1,17 @@
+[package]
+name = "tether-service"
+version = "0.1.0"
+authors = ["NikSun <candysfm@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate_type = ["cdylib"]
+
+[dependencies]
+stdext = "0.3"
+log = "0.4"
+jni = "0.19"
+android_logger = "0.10"
+lazy_static = "1.4"
