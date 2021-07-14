@@ -12,7 +12,7 @@ cargoNdk {
             buildType = "debug"
         }
     }
-    librariesNames = ["libtether_service_lib.so"]
+    librariesNames = ["libtether_service.so"]
     targets = ["arm", "arm64"]
 }
 
@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId "com.viper.simplert"
-        minSdkVersion 20
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

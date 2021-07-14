@@ -1,66 +1,60 @@
-use std::ffi::c_void;
-use std::sync::atomic::{AtomicBool, AtomicUsize};
-use std::sync::Mutex;
-use std::thread;
-
 use android_logger::Config;
-use jni::objects::{JClass, JObject};
-use jni::sys::{jint, JNI_VERSION_1_8};
+use jni::objects::JClass;
+use jni::sys::{jboolean, jint, JNI_VERSION_1_8};
 use jni::{JNIEnv, JavaVM};
 use lazy_static::lazy_static;
-use log::{trace, Level, error};
-use stdext::function_name;
+use log::{error, trace, Level};
+use std::ffi::c_void;
+use std::sync::{Arc, Mutex};
+
+use crate::tunnel::Tunnel;
+
+mod tunnel;
 
 const TAG: &str = "TetherService";
 
-struct Module {
-    tun_handle: Option<thread::JoinHandle<()>>,
-    acc_handle: Option<thread::JoinHandle<()>>,
-    tun_fd: i32,
-    acc_fd: i32,
-    is_started: sync::Arc<AtomicBool>,
-}
-
 lazy_static! {
-    static ref MODULE: Mutex<Module> = Mutex::new(None);
-}
-
-impl Module {
-    pub fn new(tun_fd: i32, acc_fd: i32) -> Self {
-        Self {
-            tun_handle: None,
-            acc_handle: None,
-            tun_fd,
-            acc_fd,
-            is_started: sync::Arc::new(AtomicBool::new(false)),
-        }
-    }
+    static ref TUNNEL: Arc<Mutex<tunnel::Tunnel>> = Arc::new(Mutex::new(tunnel::Tunnel::new()));
 }
 
 #[no_mangle]
 pub extern "C" fn JNI_OnLoad(_jvm: JavaVM, _reserved: *mut c_void) -> jint {
     android_logger::init_once(Config::default().with_min_level(Level::Trace).with_tag(TAG));
-    trace!(function_name! {});
+    trace!("JNI ONLOAD");
     JNI_VERSION_1_8
 }
 
 #[no_mangle]
 pub extern "C" fn Java_com_viper_simplert_Native_start(
-    env: JNIEnv,
+    _env: JNIEnv,
     _class: JClass,
     tun_fd: jint,
     acc_fd: jint,
-    callback: JObject,
 ) {
-    trace!(
-        "{}: tun_fd = {}, acc_fd = {}",
-        function_name!(),
-        tun_fd,
-        acc_fd
-    );
+    trace!("START: tun_fd = {}, acc_fd = {}", tun_fd, acc_fd);
+    let tunnel = TUNNEL.lock().unwrap();
 
-    if (MODULE.lock().unwrap().is_started) {
+    if tunnel.is_started() {
         error!("Native threads already started!");
         return;
     }
+
+    Tunnel::start(TUNNEL.clone(), tun_fd, acc_fd)
+}
+
+#[no_mangle]
+pub extern "C" fn Java_com_viper_simplert_Native_stop(_env: JNIEnv, _class: JClass) {
+    trace!("STOP");
+    let mut tunnel = TUNNEL.lock().unwrap();
+    tunnel.stop();
+}
+
+#[no_mangle]
+pub extern "C" fn Java_com_viper_simplert_Native_is_running(
+    _env: JNIEnv,
+    _class: JClass,
+) -> jboolean {
+    trace!("CHECK RUNNING");
+    let tunnel = TUNNEL.lock().unwrap();
+    tunnel.is_started().into()
 }

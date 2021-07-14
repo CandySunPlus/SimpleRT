@@ -24,6 +24,6 @@ public class Native {
     static native boolean is_running();
 
     static {
-        System.loadLibrary("simplertjni");
+        System.loadLibrary("tether_service");
     }
 }
