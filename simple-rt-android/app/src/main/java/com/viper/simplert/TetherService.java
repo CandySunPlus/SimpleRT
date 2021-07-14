@@ -124,7 +124,9 @@ public class TetherService extends VpnService {
     }
 
     Toast.makeText(this, "SimpleRT Connected!", Toast.LENGTH_SHORT).show();
-    Native.start(tunFd.detachFd(), accessoryFd.detachFd());
+      Log.i("XXX", "start");
+      Native.start(tunFd.detachFd(), accessoryFd.detachFd());
+      Log.i("XXX", "end");
 
     setAsUnderlyingNetwork(ipAddr + "/" + prefixLength);
 

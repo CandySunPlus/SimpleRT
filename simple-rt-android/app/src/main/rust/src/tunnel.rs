@@ -1,8 +1,20 @@
 use std::fs::File;
 use std::io::{Read, Write};
-use std::os::unix::prelude::FromRawFd;
+use std::os::unix::prelude::{FromRawFd, RawFd};
 use std::sync::{atomic, Arc, Mutex};
 use std::thread;
+
+#[allow(unused_macros)]
+macro_rules! syscall {
+    ($fn: ident ( $($arg: expr),* $(,)* ) ) => {{
+        let res = unsafe { libc::$fn($($arg, )*) };
+        if res == -1 {
+            Err(std::io::Error::last_os_error())
+        } else {
+            Ok(res)
+        }
+    }};
+}
 
 enum HandleType {
     Tun,
@@ -28,9 +40,18 @@ impl Tunnel {
         }
     }
 
-    fn set_fd(&mut self, tun_fd: i32, acc_fd: i32) {
-        self.acc_file = Some(unsafe { File::from_raw_fd(acc_fd) });
-        self.tun_file = Some(unsafe { File::from_raw_fd(tun_fd) });
+    fn set_fd(&mut self, tun_fd: RawFd, acc_fd: RawFd) {
+        if let Ok(flags) = syscall!(fcntl(acc_fd, libc::F_GETFL, 0)) {
+            syscall!(fcntl(acc_fd, libc::F_SETFL, flags & !libc::O_NONBLOCK))
+                .expect("set acc_fd flags failed");
+            self.acc_file = Some(unsafe { File::from_raw_fd(acc_fd) });
+        }
+
+        if let Ok(flags) = syscall!(fcntl(tun_fd, libc::F_GETFL, 0)) {
+            syscall!(fcntl(tun_fd, libc::F_SETFL, flags & !libc::O_NONBLOCK))
+                .expect("set tun_fd flags failed");
+            self.tun_file = Some(unsafe { File::from_raw_fd(tun_fd) });
+        }
     }
 
     fn thread_proc(tunnel: Arc<Mutex<Self>>, handle_type: HandleType) {
@@ -88,7 +109,7 @@ impl Tunnel {
         self.set_fd(tun_fd, acc_fd);
     }
 
-    pub fn start(tunnel: Arc<Mutex<Self>>, tun_fd: i32, acc_fd: i32) {
+    pub fn start(tunnel: Arc<Mutex<Self>>, tun_fd: RawFd, acc_fd: RawFd) {
         tunnel.lock().unwrap().init(tun_fd, acc_fd);
 
         for handle_type in vec![HandleType::Tun, HandleType::Acc] {

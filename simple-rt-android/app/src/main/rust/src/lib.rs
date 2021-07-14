@@ -1,6 +1,6 @@
 use android_logger::Config;
 use jni::objects::JClass;
-use jni::sys::{jboolean, jint, JNI_VERSION_1_8};
+use jni::sys::{jboolean, jint, JNI_VERSION_1_6};
 use jni::{JNIEnv, JavaVM};
 use lazy_static::lazy_static;
 use log::{error, trace, Level};
@@ -21,7 +21,7 @@ lazy_static! {
 pub extern "C" fn JNI_OnLoad(_jvm: JavaVM, _reserved: *mut c_void) -> jint {
     android_logger::init_once(Config::default().with_min_level(Level::Trace).with_tag(TAG));
     trace!("JNI ONLOAD");
-    JNI_VERSION_1_8
+    JNI_VERSION_1_6
 }
 
 #[no_mangle]
@@ -50,7 +50,7 @@ pub extern "C" fn Java_com_viper_simplert_Native_stop(_env: JNIEnv, _class: JCla
 }
 
 #[no_mangle]
-pub extern "C" fn Java_com_viper_simplert_Native_is_running(
+pub extern "C" fn Java_com_viper_simplert_Native_isRunning(
     _env: JNIEnv,
     _class: JClass,
 ) -> jboolean {
