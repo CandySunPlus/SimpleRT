@@ -2,3 +2,4 @@ obj
 simple-rt
 .cache
 config.mk
+compile_commands.json
