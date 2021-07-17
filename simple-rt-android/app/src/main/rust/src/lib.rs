@@ -7,19 +7,23 @@ use log::{error, trace, Level};
 use std::ffi::c_void;
 use std::sync::{Arc, Mutex};
 
-use crate::tunnel::Tunnel;
-
 mod tunnel;
+use tunnel::Tunnel;
 
 const TAG: &str = "TetherService";
 
 lazy_static! {
-    static ref TUNNEL: Arc<Mutex<tunnel::Tunnel>> = Arc::new(Mutex::new(tunnel::Tunnel::new()));
+    static ref TUNNEL: Arc<Mutex<Tunnel>> = Arc::new(Mutex::new(Tunnel::new()));
 }
+
 
 #[no_mangle]
 pub extern "C" fn JNI_OnLoad(_jvm: JavaVM, _reserved: *mut c_void) -> jint {
-    android_logger::init_once(Config::default().with_min_level(Level::Trace).with_tag(TAG));
+    if cfg!(debug_assertions) {
+        android_logger::init_once(Config::default().with_min_level(Level::Trace).with_tag(TAG));
+    } else {
+        android_logger::init_once(Config::default().with_min_level(Level::Info).with_tag(TAG));
+    }
     trace!("JNI ONLOAD");
     JNI_VERSION_1_6
 }
