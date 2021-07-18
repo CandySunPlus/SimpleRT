@@ -1,9 +1,9 @@
 use super::binary;
-use log::trace;
+use log::{trace, warn};
 use std::fs::File;
 use std::io::{Read, Write};
 use std::os::unix::prelude::{FromRawFd, RawFd};
-use std::sync::{atomic, Arc, Mutex};
+use std::sync::{atomic, Arc};
 use std::thread;
 
 #[allow(unused_macros)]
@@ -51,7 +51,7 @@ impl Tunnel {
     fn thread_proc(
         tun_file: &mut File,
         acc_file: &mut File,
-        // tunnel: Arc<Mutex<Self>>,
+        is_started: Arc<atomic::AtomicBool>,
         handle_type: HandleType,
     ) {
         let mut buf = [0u8; ACC_BUF_SIZE];
@@ -69,7 +69,7 @@ impl Tunnel {
                 out_file = tun_file;
             }
         }
-        loop {
+        while is_started.load(atomic::Ordering::SeqCst) {
             if let Ok(_) = in_file.read(&mut buf) {
                 out_file.write(&buf).expect("write file error");
                 trace!(
@@ -82,19 +82,21 @@ impl Tunnel {
                 break;
             }
         }
+        is_started.store(false, atomic::Ordering::SeqCst);
     }
 
-    pub fn start(tunnel_rc: Arc<Mutex<Self>>, tun_fd: RawFd, acc_fd: RawFd) {
-        let mut tunnel = tunnel_rc.lock().unwrap();
-        tunnel.is_started.store(true, atomic::Ordering::SeqCst);
+    pub fn start(&mut self, tun_fd: RawFd, acc_fd: RawFd) {
+        self.is_started.store(true, atomic::Ordering::SeqCst);
 
         for handle_type in vec![HandleType::Tun, HandleType::Acc] {
             let mut tun_file = Tunnel::get_file_with_raw_fd(tun_fd);
             let mut acc_file = Tunnel::get_file_with_raw_fd(acc_fd);
-            tunnel.handles.push(Some(thread::spawn(move || {
+            let is_started = self.is_started.clone();
+            self.handles.push(Some(thread::spawn(move || {
                 Tunnel::thread_proc(
                     tun_file.as_mut().expect("can not found tun file"),
                     acc_file.as_mut().expect("can not foun acc file"),
+                    is_started,
                     handle_type,
                 );
             })));
@@ -106,7 +108,9 @@ impl Tunnel {
 
         for handle in &mut self.handles {
             if let Some(handle) = handle.take() {
-                handle.join().unwrap();
+                if let Err(_) = handle.join() {
+                    warn!("thread join failed");
+                } 
             }
         }
     }

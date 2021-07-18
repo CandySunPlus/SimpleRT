@@ -16,7 +16,6 @@ lazy_static! {
     static ref TUNNEL: Arc<Mutex<Tunnel>> = Arc::new(Mutex::new(Tunnel::new()));
 }
 
-
 #[no_mangle]
 pub extern "C" fn JNI_OnLoad(_jvm: JavaVM, _reserved: *mut c_void) -> jint {
     if cfg!(debug_assertions) {
@@ -36,14 +35,15 @@ pub extern "C" fn Java_com_viper_simplert_Native_start(
     acc_fd: jint,
 ) {
     trace!("START: tun_fd = {}, acc_fd = {}", tun_fd, acc_fd);
+    let mut tunnel = TUNNEL.lock().unwrap();
 
-    if TUNNEL.lock().unwrap().is_started() {
+    if tunnel.is_started() {
         error!("Native threads already started!");
         return;
     }
 
     trace!("TUNNEL STARTING");
-    Tunnel::start(TUNNEL.clone(), tun_fd, acc_fd);
+    tunnel.start(tun_fd, acc_fd);
     trace!("TUNNEL STARTED");
 }
 
