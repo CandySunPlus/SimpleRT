@@ -174,7 +174,7 @@ accessory_t *probe_usb_device(struct libusb_device *dev,
     goto error;
   }
 
-  if (!aoa_version) {
+  if (!aoa_version || aoa_version > 2) {
     struct libusb_device_descriptor desc;
     libusb_get_device_descriptor(dev, &desc);
     printf("Detected usb device with vendor id %x and product id %x does "
