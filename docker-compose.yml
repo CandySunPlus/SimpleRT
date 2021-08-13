@@ -6,9 +6,9 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ~/.android/sdk:/root/.android/sdk
+      - ~/.android/:/root/.android/
       - ./simple-rt-android:/root/source
     environment:
-      - ANDROID_SDK_ROOT=/root/.android/sdk
-      - ANDROID_NDK_HOME=/root/.android/sdk/ndk-bundle
+      - ANDROID_SDK_ROOT=/root/.android/
+      - ANDROID_NDK_HOME=/root/.android/ndk-bundle
       - ANDROID_HOME=/root/.android
