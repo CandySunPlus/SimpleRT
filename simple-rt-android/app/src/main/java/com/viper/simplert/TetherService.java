@@ -19,10 +19,14 @@
 package com.viper.simplert;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
 import android.net.ConnectivityManager;
@@ -32,6 +36,8 @@ import android.net.Network;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import android.util.Log;
@@ -39,10 +45,14 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import static androidx.core.app.NotificationCompat.PRIORITY_MIN;
+
 public class TetherService extends VpnService {
   private static final String TAG = "TetherService";
   private static final String ACTION_USB_PERMISSION = "com.viper.simplert.TetherService.action.USB_PERMISSION";
   private static final int FOREGROUND_NOTIFICATION_ID = 16;
+  private static final String CHANNEL_ID = "simpleRT";
+  private static final String CHANNEL_NAME = "SimpleRT Service";
 
   private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
     public void onReceive(Context context, Intent intent) {
@@ -130,14 +140,27 @@ public class TetherService extends VpnService {
 
     setAsUnderlyingNetwork(ipAddr + "/" + prefixLength);
 
-    startForeground(FOREGROUND_NOTIFICATION_ID, new NotificationCompat.Builder(this, "default")
-      .setOngoing(true)
-      .setContentTitle(getString(R.string.app_name))
-      .setContentText(getString(R.string.description_service_running))
-      .setSmallIcon(android.R.drawable.ic_secure)
-      .build());
+    startForeground(FOREGROUND_NOTIFICATION_ID, buildNotification());
 
     return START_NOT_STICKY;
+  }
+
+  private Notification buildNotification() {
+    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      NotificationChannelCompat channel = new NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
+              .setName(CHANNEL_NAME)
+              .build();
+      NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+      manager.createNotificationChannel(channel);
+      notificationBuilder = notificationBuilder.setPriority(NotificationManagerCompat.IMPORTANCE_DEFAULT);
+    }
+    return notificationBuilder.setOngoing(true)
+            .setContentTitle(getString(R.string.app_name))
+            .setContentText(getString(R.string.description_service_running))
+            .setSmallIcon(android.R.drawable.ic_secure)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .build();
   }
 
   @Override
