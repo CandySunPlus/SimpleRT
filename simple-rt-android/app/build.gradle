@@ -19,7 +19,7 @@ cargoNdk {
 android {
     compileSdkVersion 30
     //noinspection GradleDependency
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
     ndkVersion "22.1.7171670"
 
     defaultConfig {
