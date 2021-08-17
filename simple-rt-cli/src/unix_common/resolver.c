@@ -28,25 +28,25 @@
 #include "resolv_compat.h"
 #endif
 
-const char *get_system_nameserver(void) {
-  struct __res_state rs;
-  static char buf[128];
+const char* get_system_nameserver(void) {
+    struct __res_state rs;
+    static char buf[128];
 
-  if (res_ninit(&rs) < 0) {
-    goto end;
-  }
+    if (res_ninit(&rs) < 0) {
+        goto end;
+    }
 
-  if (!rs.nscount) {
-    goto end;
-  }
+    if (!rs.nscount) {
+        goto end;
+    }
 
-  /* using first nameserver */
-  memset(buf, 0, sizeof(buf));
-  strncpy(buf, inet_ntoa(rs.nsaddr_list[0].sin_addr), sizeof(buf) - 1);
+    /* using first nameserver */
+    memset(buf, 0, sizeof(buf));
+    strncpy(buf, inet_ntoa(rs.nsaddr_list[0].sin_addr), sizeof(buf) - 1);
 
-  return buf;
+    return buf;
 
 end:
-  fprintf(stderr, "Cannot find system nameserver. Default one will be used.\n");
-  return DEFAULT_NAMESERVER;
+    fprintf(stderr, "Cannot find system nameserver. Default one will be used.\n");
+    return DEFAULT_NAMESERVER;
 }

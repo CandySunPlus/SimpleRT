@@ -23,4 +23,4 @@ static simple_rt_config_t simple_rt_config = {
     .nameserver = DEFAULT_NAMESERVER,
 };
 
-simple_rt_config_t *get_simple_rt_config(void) { return &simple_rt_config; }
+simple_rt_config_t* get_simple_rt_config(void) { return &simple_rt_config; }
