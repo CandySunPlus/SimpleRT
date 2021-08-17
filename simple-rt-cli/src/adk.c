@@ -64,6 +64,7 @@ static uint16_t get_accessory_endpoints(struct libusb_device* dev) {
     uint8_t ep_out = AOA_ACCESSORY_EP_OUT;
 
     bool found = false;
+
     struct libusb_config_descriptor* config = NULL;
 
     libusb_get_config_descriptor(dev, 0, &config);
@@ -151,8 +152,11 @@ accessory_t* probe_usb_device(struct libusb_device* dev, gen_new_serial_str_cb g
     }
 
     if (is_accessory_present(dev)) {
+        if ((ret = libusb_claim_interface(handle, 0)) < 0) {
+            fprintf(stderr, "Cannot Claim Interface: %s\n", libusb_strerror(ret));
+            return NULL;
+        }
         uint16_t endpoints = get_accessory_endpoints(dev);
-
         /* create accessory struct */
         return new_accessory(handle, endpoints >> 8, endpoints & 0xff);
     }
@@ -282,7 +286,6 @@ ssize_t read_usb_packet(struct libusb_device_handle* handle, uint8_t ep, uint8_t
     int ret;
     int transferred;
 
-    printf("endpoint: %d\n", ep);
     while (true) {
         ret = libusb_bulk_transfer(handle, ep, data, size, &transferred, ACC_TIMEOUT);
         if (ret < 0) {
