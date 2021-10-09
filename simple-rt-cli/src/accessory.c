@@ -201,7 +201,7 @@ accessory_id_t gen_new_serial_string(char* str, size_t size) {
     accessory_id_t id;
 
     if ((id = acquire_accessory_id()) == 0) {
-        fprintf(stderr, "No free accessory id's left\n");
+        fprintf(stderr, "No free accessory IDs left\n");
         return 0;
     }
 

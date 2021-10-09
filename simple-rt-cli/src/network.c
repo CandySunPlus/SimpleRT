@@ -35,7 +35,7 @@
 #define SIMPLERT_NETWORK_ADDRESS_BUILDER(a, b, c, d)                                                                   \
     ((uint32_t)((a) << 24) | (uint32_t)((b) << 16) | (uint32_t)((c) << 8) | (uint32_t)((d) << 0))
 
-#define SIMPLERT_NETWORK_ADDRESS SIMPLERT_NETWORK_ADDRESS_BUILDER(10, 1, 1, 0)
+#define SIMPLERT_NETWORK_ADDRESS SIMPLERT_NETWORK_ADDRESS_BUILDER(10, 10, 10, 0)
 
 #define NETWORK_ADDRESS(addr) ((addr)&0xffffff00)
 
@@ -157,7 +157,7 @@ bool start_network(void) {
     }
 
     if (!iface_up(tun_name)) {
-        fprintf(stderr, "Unable set iface %s up\n", tun_name);
+        fprintf(stderr, "Unable to set interface %s up\n", tun_name);
         close(tun_fd);
         return false;
     }

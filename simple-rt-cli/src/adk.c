@@ -267,7 +267,7 @@ accessory_t* probe_usb_device(struct libusb_device* dev, gen_new_serial_str_cb g
         }
     }
 
-    puts("Accessory was inited successfully!");
+    puts("Accessory was initialized successfully!");
 
 error:
     if (ret < 0) {
