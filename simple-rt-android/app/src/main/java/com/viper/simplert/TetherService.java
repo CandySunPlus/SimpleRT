@@ -36,6 +36,7 @@ import android.net.Network;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
+import android.os.PowerManager;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
@@ -54,7 +55,16 @@ public class TetherService extends VpnService {
   private static final String CHANNEL_ID = "simpleRT";
   private static final String CHANNEL_NAME = "SimpleRT Service";
 
-  private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+            "MyApp::MyWakelockTag");
+        wakeLock.acquire();
+    }
+
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
     public void onReceive(Context context, Intent intent) {
       String action = intent.getAction();
 
