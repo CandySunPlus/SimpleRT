@@ -23,7 +23,7 @@ FIRST RUN: check out -h option!
 
 ### No root, no adb required!
 
-## Full Linux and macOS support! Windows version is in early researching.
+## Full Linux and macOS support! We are researching a Windows version.
 
    Current version features:
    - Multi-tether. You can connect several android devices into one virtual network!
